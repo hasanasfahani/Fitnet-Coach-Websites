@@ -15,9 +15,9 @@ const translations = {
       join: "انضم مجاناً",
     },
     hero: {
-      titlePrefix: "غيّر جسمك مع",
-      titleHighlight: "الكوتش طارق",
-      titleSuffix: "وارجع واثق بنفسك أكثر",
+      titlePrefix: "جاهز للتحدي مع",
+      titleHighlight: "كوتش طارق",
+      titleSuffix: "؟",
       prizeEmojis: "",
       subtitle:
         "تدريب أونلاين لمدة شهر: خطة تمرين، خطة تغذية، ومتابعة مع الكوتش ضمن التحدي",
@@ -83,9 +83,9 @@ const translations = {
       join: "Join for FREE",
     },
     hero: {
-      titlePrefix: "Transform Your Body With",
+      titlePrefix: "Ready for the challenge with",
       titleHighlight: "Coach Tarek",
-      titleSuffix: "AND FEEL CONFIDENT AGAIN",
+      titleSuffix: "?",
       prizeEmojis: "",
       subtitle:
         "One month of online coaching: a workout plan, nutrition plan, and coach follow-up as part of the challenge.",

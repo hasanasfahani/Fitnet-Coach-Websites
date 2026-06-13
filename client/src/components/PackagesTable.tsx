@@ -115,6 +115,41 @@ function FeatureValue({
   return <span className="text-xs font-extrabold text-white/80 sm:text-sm">{value}</span>;
 }
 
+function PackagePrice({
+  packageInfo,
+  fallback,
+  isArabic,
+  compact = false,
+}: {
+  packageInfo: ReturnType<typeof getChallengePackages>[PackageId];
+  fallback: string;
+  isArabic: boolean;
+  compact?: boolean;
+}) {
+  if (packageInfo.price === 0) {
+    return <span>{fallback}</span>;
+  }
+
+  return (
+    <span className="flex flex-col items-start">
+      {packageInfo.originalPrice ? (
+        <span
+          className={`font-bold text-white/45 line-through decoration-2 ${
+            compact ? "text-sm" : "text-xs"
+          }`}
+        >
+          {isArabic
+            ? `${packageInfo.originalPrice} درهم`
+            : `AED ${packageInfo.originalPrice}`}
+        </span>
+      ) : null}
+      <span>
+        {isArabic ? `${packageInfo.price} درهم` : `AED ${packageInfo.price}`}
+      </span>
+    </span>
+  );
+}
+
 export default function PackagesTable({
   isArabic,
   onSelect,
@@ -182,11 +217,12 @@ export default function PackagesTable({
                 <div>
                   <p className="text-xl font-extrabold text-white">{item.name}</p>
                   <p className="mt-2 text-3xl font-black text-primary">
-                    {packageInfo.price === 0
-                      ? item.price
-                      : isArabic
-                        ? `${packageInfo.price} درهم`
-                        : `AED ${packageInfo.price}`}
+                    <PackagePrice
+                      packageInfo={packageInfo}
+                      fallback={item.price}
+                      isArabic={isArabic}
+                      compact
+                    />
                   </p>
                 </div>
                 {item.badge ? (
@@ -271,13 +307,13 @@ export default function PackagesTable({
                       </span>
                     ) : null}
                     <p className="text-base font-extrabold text-white">{item.name}</p>
-                    <p className="mt-1 text-xl font-black text-primary">
-                      {challengePackages[packageId].price === 0
-                        ? item.price
-                        : isArabic
-                          ? `${challengePackages[packageId].price} درهم`
-                          : `AED ${challengePackages[packageId].price}`}
-                    </p>
+                    <div className="mt-1 flex justify-center text-xl font-black text-primary">
+                      <PackagePrice
+                        packageInfo={challengePackages[packageId]}
+                        fallback={item.price}
+                        isArabic={isArabic}
+                      />
+                    </div>
                   </th>
                 );
               })}

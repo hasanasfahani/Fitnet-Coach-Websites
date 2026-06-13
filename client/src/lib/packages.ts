@@ -4,6 +4,7 @@ export type { PackageId } from "@shared/coaches";
 export type ChallengePackage = {
   id: PackageId;
   price: number;
+  originalPrice?: number;
   currency: "AED";
   whatsappMessage?: string;
 };
@@ -14,12 +15,14 @@ export function getChallengePackages(coach: CoachConfig): Record<PackageId, Chal
     "premium-single": {
       id: "premium-single",
       price: coach.packages["premium-single"].price,
+      originalPrice: coach.packages["premium-single"].originalPrice,
       currency: "AED",
       whatsappMessage: `مرحبا! بدي اشترك بتحدي الكوتش ${coach.arabicFirstName} الباقة البريميوم الفردية`,
     },
     "premium-duo": {
       id: "premium-duo",
       price: coach.packages["premium-duo"].price,
+      originalPrice: coach.packages["premium-duo"].originalPrice,
       currency: "AED",
       whatsappMessage: `مرحبا! بدي اشترك بتحدي الكوتش ${coach.arabicFirstName} الباقة البريميوم الثنائية`,
     },
