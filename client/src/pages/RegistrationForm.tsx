@@ -509,9 +509,11 @@ function StepNineUrgency({ isArabic }: { isArabic: boolean }) {
 
 function PaymentSuccess() {
   const { isArabic } = useLanguage();
-  const isFree =
-    typeof window !== "undefined" &&
-    new URLSearchParams(window.location.search).get("free") === "1";
+  const [isFree] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("free") === "1",
+  );
   const [copied, setCopied] = useState(false);
   const [paymentSyncStatus, setPaymentSyncStatus] = useState<
     "idle" | "syncing" | "synced" | "failed"
@@ -872,6 +874,7 @@ function RegistrationFlow({ initialPaymentStatus }: { initialPaymentStatus: stri
   const canContinue = !step.options || selected.length > 0;
   const StepIcon = step.icon;
   const formStartTrackedRef = useRef(false);
+  const completedStepsRef = useRef(new Set<number>());
 
   const trackFormStart = () => {
     if (formStartTrackedRef.current) return;
@@ -888,6 +891,9 @@ function RegistrationFlow({ initialPaymentStatus }: { initialPaymentStatus: stri
   };
 
   const trackStepComplete = (completedStepIndex: number) => {
+    if (completedStepsRef.current.has(completedStepIndex)) return;
+    completedStepsRef.current.add(completedStepIndex);
+
     pushDataLayerEvent({
       event: "registration_form_step_complete",
       ...trackingBase(),
