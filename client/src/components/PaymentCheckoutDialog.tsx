@@ -20,7 +20,7 @@ const fixedPaymentCurrency = "AED";
 type PaymentCheckoutDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  source: "main_hero" | "registration_form";
+  source: "main_hero" | "pricing_section" | "registration_form";
   packageId: PackageId;
   isArabic: boolean;
   onError?: (message: string) => void;
@@ -64,6 +64,7 @@ export default function PaymentCheckoutDialog({
     contactInfo.whatsapp.trim().length >= 7 &&
     contactConfirmed;
   const selectedPackage = getChallengePackages(coach)[packageId];
+  const pageType = source === "registration_form" ? "registration_form" : "home_page";
   const text = isArabic
     ? {
         invalid: "عبّي معلوماتك وتأكد إنها صحيحة قبل المتابعة.",
@@ -115,7 +116,7 @@ export default function PaymentCheckoutDialog({
     trackInteraction();
     pushDataLayerEvent("registration_form_submit", packageId, {
       cta_location: source,
-      page_type: "registration_form",
+      page_type: pageType,
       payment_method: packageId === "free" ? "free" : "ziina",
       payment_path: packageId === "free" ? "free" : "online",
     });
@@ -172,6 +173,7 @@ export default function PaymentCheckoutDialog({
 
       pushDataLayerEvent("payment_started", packageId, {
         cta_location: source,
+        page_type: pageType,
         payment_method: "ziina",
         payment_path: "online",
         value: amountToValue(data.amount, selectedPackage.price),

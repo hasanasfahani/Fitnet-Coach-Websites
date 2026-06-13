@@ -159,7 +159,7 @@ export default function PackagesTable({
           const trackSyriaPayment = () => {
             pushDataLayerEvent("payment_started", packageId, {
               cta_location: "pricing_section",
-              page_type: "registration_form",
+              page_type: compact ? "registration_form" : "home_page",
               payment_method: "whatsapp_manual",
               payment_path: "syria",
             });
@@ -309,7 +309,7 @@ export default function PackagesTable({
                 const trackSyriaPayment = () => {
                   pushDataLayerEvent("payment_started", packageId, {
                     cta_location: "pricing_section",
-                    page_type: "registration_form",
+                    page_type: compact ? "registration_form" : "home_page",
                     payment_method: "whatsapp_manual",
                     payment_path: "syria",
                   });
