@@ -24,10 +24,13 @@ export default function Hero() {
       cta_location: "main_hero",
       page_type: "homepage",
     });
+    window.localStorage.removeItem("registration-form-step");
     const localCoachOverride = getLocalCoachOverride();
-    window.location.href = localCoachOverride
-      ? `/registration-form?coach=${encodeURIComponent(localCoachOverride)}`
-      : "/registration-form";
+    const params = new URLSearchParams({ start: "1" });
+    if (localCoachOverride) {
+      params.set("coach", localCoachOverride);
+    }
+    window.location.href = `/registration-form?${params.toString()}`;
   };
 
   return (

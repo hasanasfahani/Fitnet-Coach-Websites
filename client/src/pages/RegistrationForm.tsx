@@ -98,10 +98,6 @@ const arabicSteps: Step[] = [
   {
     eyebrow: "البداية",
     title: "مو ناقصك حماس لتتمرن وتلتزم.\nناقصك نظام وجو يخلوك تكمل.",
-    lines: [
-      "ادخل تحدي كوتش طارق على فتنت",
-      "وابدأ مع ناس عندها نفس هدفك.",
-    ],
     cta: "خبرني أكثر",
     icon: Sparkles,
   },
@@ -171,7 +167,7 @@ const arabicSteps: Step[] = [
     ],
     response: [
       "تمام.",
-      "خلينا نثبت هالوعد بخطة واضحة وتحدي يبدأ بمنتصف الشهر.",
+      "خلينا نثبت هالوعد بخطة واضحة وتحدي يبدأ بتاريخ 1 يوليو.",
     ],
     cta: "شو رح احصل بالتحدي؟",
     icon: Medal,
@@ -193,7 +189,7 @@ const arabicSteps: Step[] = [
   },
   {
     eyebrow: "الجولة قربت",
-    title: "التحدي يبدأ بمنتصف الشهر، والتسجيل يغلق قبل الانطلاق.",
+    title: "التحدي يبدأ بتاريخ 1 يوليو، والتسجيل يغلق قبل الانطلاق.",
     lines: [
       "بعد بداية التحدي، ما في دخول لنفس الجولة حتى تكون المنافسة عادلة لكل المشاركين.",
     ],
@@ -212,10 +208,6 @@ const englishSteps: Step[] = [
   {
     eyebrow: "Start",
     title: "You do not need more motivation.\nYou need a system that helps you stay consistent.",
-    lines: [
-      "Join Coach Tarek's challenge on Fitnet",
-      "and start with people working toward the same goal.",
-    ],
     cta: "Tell me more",
     icon: Sparkles,
   },
@@ -285,7 +277,7 @@ const englishSteps: Step[] = [
     ],
     response: [
       "Perfect.",
-      "Let us support that promise with a clear plan and a challenge starting mid-month.",
+      "Let us support that promise with a clear plan and a challenge starting July 1.",
     ],
     cta: "What will I get?",
     icon: Medal,
@@ -307,7 +299,7 @@ const englishSteps: Step[] = [
   },
   {
     eyebrow: "The round is close",
-    title: "The challenge starts mid-month, and registration closes before launch.",
+    title: "The challenge starts July 1, and registration closes before launch.",
     lines: [
       "Once the challenge begins, entry closes for that round to keep the competition fair.",
     ],
@@ -357,6 +349,10 @@ function getSavedStepIndex(paymentStatus: string | null) {
   }
 
   if (typeof window === "undefined") return 0;
+  if (new URLSearchParams(window.location.search).get("start") === "1") {
+    window.localStorage.removeItem("registration-form-step");
+    return 0;
+  }
   const saved = Number(window.localStorage.getItem("registration-form-step"));
   return Number.isFinite(saved) ? Math.min(Math.max(saved, 0), paymentStepIndex) : 0;
 }
@@ -453,7 +449,7 @@ function FitnetScreensPreview({ isArabic }: { isArabic: boolean }) {
   ];
 
   return (
-    <div className="mt-7 rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+    <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] p-3 sm:mt-7">
       <p className="mb-3 text-sm font-extrabold text-primary">
         {isArabic ? "هيك رح تشوف نظامك داخل Fitnet" : "This is how your system looks inside Fitnet"}
       </p>
@@ -461,12 +457,12 @@ function FitnetScreensPreview({ isArabic }: { isArabic: boolean }) {
         {screens.map((screen, index) => (
           <div
             key={screen.title}
-            className="w-28 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-black/35 sm:w-32"
+            className="w-24 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-black/35 sm:w-32"
           >
             <img
               src={screen.image}
               alt={screen.alt}
-              className="h-52 w-full object-cover object-top sm:h-56"
+              className="h-40 w-full object-cover object-top sm:h-56"
               loading={index === 0 ? "eager" : "lazy"}
               decoding="async"
             />
@@ -975,7 +971,7 @@ function RegistrationFlow({ initialPaymentStatus }: { initialPaymentStatus: stri
   return (
     <main
       dir={isArabic ? "rtl" : "ltr"}
-      className="min-h-screen overflow-hidden bg-background text-foreground selection:bg-primary selection:text-black"
+      className="min-h-screen overflow-x-hidden bg-background text-foreground selection:bg-primary selection:text-black"
     >
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -right-32 top-16 h-72 w-72 rounded-full bg-primary/15 blur-[120px]" />
@@ -1028,9 +1024,9 @@ function RegistrationFlow({ initialPaymentStatus }: { initialPaymentStatus: stri
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 24 }}
                 transition={{ duration: 0.22 }}
-                className="min-h-[520px]"
+                className="min-h-0 sm:min-h-[520px]"
               >
-                <div className="mb-7 flex items-center gap-3">
+                <div className="mb-5 flex items-center gap-3 sm:mb-7">
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/35 bg-primary/10">
                     <StepIcon className="h-7 w-7 text-primary" />
                   </div>
@@ -1044,12 +1040,12 @@ function RegistrationFlow({ initialPaymentStatus }: { initialPaymentStatus: stri
                   </div>
                 </div>
 
-                <h1 className="max-w-3xl whitespace-pre-line text-balance text-4xl font-extrabold leading-tight text-white md:text-5xl">
+                <h1 className="max-w-3xl whitespace-pre-line text-balance text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl">
                   {step.title}
                 </h1>
 
                 {step.lines ? (
-                  <div className="mt-6 max-w-2xl space-y-3 text-xl font-medium leading-relaxed text-white/75">
+                  <div className="mt-5 max-w-2xl space-y-3 text-lg font-medium leading-relaxed text-white/75 sm:mt-6 sm:text-xl">
                     {step.lines.map((line) => (
                       <p key={line}>{line}</p>
                     ))}
