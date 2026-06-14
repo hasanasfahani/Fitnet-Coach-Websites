@@ -15,8 +15,6 @@ import { useCoach } from "@/lib/coach";
 import { pushDataLayerEvent } from "@/lib/tracking";
 
 const paymentStepIndex = 9;
-const fixedPaymentCurrency = "AED";
-
 type PaymentCheckoutDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -64,6 +62,10 @@ export default function PaymentCheckoutDialog({
     contactInfo.whatsapp.trim().length >= 7 &&
     contactConfirmed;
   const selectedPackage = getChallengePackages(coach)[packageId];
+  const formattedPrice =
+    selectedPackage.currency === "USD"
+      ? `$${selectedPackage.price.toFixed(1)}`
+      : `${selectedPackage.price} درهم`;
   const pageType = source === "registration_form" ? "registration_form" : "home_page";
   const text = isArabic
     ? {
@@ -74,7 +76,7 @@ export default function PaymentCheckoutDialog({
         description:
           packageId === "free"
             ? "أضف بياناتك حتى نثبت مكانك ونرسل لك كود دخول التحدي."
-            : `أضف بياناتك للانتقال إلى دفع آمن بقيمة ${selectedPackage.price} درهم عبر Ziina.`,
+            : `أضف بياناتك للانتقال إلى دفع آمن بقيمة ${formattedPrice} عبر Ziina.`,
         name: "الاسم الكامل",
         namePlaceholder: `مثال: ${coach.arabicFirstName}`,
         email: "الإيميل",
@@ -92,7 +94,7 @@ export default function PaymentCheckoutDialog({
         description:
           packageId === "free"
             ? "Add your details to reserve your place and receive the challenge access code."
-            : `Add your details to continue to a secure AED ${selectedPackage.price} payment through Ziina.`,
+            : `Add your details to continue to a secure ${formattedPrice} payment through Ziina.`,
         name: "Full name",
         namePlaceholder: `Example: ${coach.name}`,
         email: "Email",
@@ -180,7 +182,7 @@ export default function PaymentCheckoutDialog({
         currency:
           typeof data.currencyCode === "string"
             ? data.currencyCode
-            : fixedPaymentCurrency,
+            : selectedPackage.currency,
       });
       window.localStorage.setItem("registration-form-step", String(paymentStepIndex));
       if (data.registrationId) {

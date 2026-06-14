@@ -1,29 +1,29 @@
-import type { CoachConfig, PackageId } from "@shared/coaches";
+import type { CoachConfig, CurrencyCode, PackageId } from "@shared/coaches";
 export type { PackageId } from "@shared/coaches";
 
 export type ChallengePackage = {
   id: PackageId;
   price: number;
   originalPrice?: number;
-  currency: "AED";
+  currency: CurrencyCode;
   whatsappMessage?: string;
 };
 
 export function getChallengePackages(coach: CoachConfig): Record<PackageId, ChallengePackage> {
   return {
-    free: { id: "free", price: 0, currency: "AED" },
+    free: { id: "free", price: 0, currency: coach.packages.free.currency },
     "premium-single": {
       id: "premium-single",
       price: coach.packages["premium-single"].price,
       originalPrice: coach.packages["premium-single"].originalPrice,
-      currency: "AED",
+      currency: coach.packages["premium-single"].currency,
       whatsappMessage: `مرحبا! بدي اشترك بتحدي الكوتش ${coach.arabicFirstName} الباقة البريميوم الفردية`,
     },
     "premium-duo": {
       id: "premium-duo",
       price: coach.packages["premium-duo"].price,
       originalPrice: coach.packages["premium-duo"].originalPrice,
-      currency: "AED",
+      currency: coach.packages["premium-duo"].currency,
       whatsappMessage: `مرحبا! بدي اشترك بتحدي الكوتش ${coach.arabicFirstName} الباقة البريميوم الثنائية`,
     },
   };

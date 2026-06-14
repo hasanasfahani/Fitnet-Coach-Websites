@@ -130,6 +130,13 @@ function PackagePrice({
     return <span>{fallback}</span>;
   }
 
+  const formatPrice = (amount: number) =>
+    packageInfo.currency === "USD"
+      ? `$${amount.toFixed(amount % 1 === 0 ? 0 : 1)}`
+      : isArabic
+        ? `${amount} درهم`
+        : `AED ${amount}`;
+
   return (
     <span className="flex flex-col items-start">
       {packageInfo.originalPrice ? (
@@ -138,13 +145,11 @@ function PackagePrice({
             compact ? "text-sm" : "text-xs"
           }`}
         >
-          {isArabic
-            ? `${packageInfo.originalPrice} درهم`
-            : `AED ${packageInfo.originalPrice}`}
+          {formatPrice(packageInfo.originalPrice)}
         </span>
       ) : null}
       <span>
-        {isArabic ? `${packageInfo.price} درهم` : `AED ${packageInfo.price}`}
+        {formatPrice(packageInfo.price)}
       </span>
     </span>
   );

@@ -102,9 +102,23 @@ async function ensureChallenge(coachSlug?: string | null) {
         coach.id,
         config.challengeName,
         config.challengeSlug,
-        config.packages["premium-single"].price * 100,
+        Math.round(config.packages["premium-single"].price * 100),
         config.packages["premium-single"].currency,
         null,
+      ],
+    );
+  } else {
+    challengeResult = await pool.query(
+      `update challenges
+       set name = $3, price_amount = $4, currency = $5, updated_at = now()
+       where coach_id = $1 and slug = $2
+       returning *`,
+      [
+        coach.id,
+        config.challengeSlug,
+        config.challengeName,
+        Math.round(config.packages["premium-single"].price * 100),
+        config.packages["premium-single"].currency,
       ],
     );
   }
@@ -144,8 +158,8 @@ export async function createPendingRegistration(
       coach.id,
       challenge.id,
       operationId,
-      selectedPackage.price * 100,
-      challenge.currency,
+      Math.round(selectedPackage.price * 100),
+      selectedPackage.currency,
       JSON.stringify({
         packageId,
         packageTrackingId: selectedPackage.trackingId,
@@ -541,6 +555,13 @@ export async function getAdminSummary() {
      from registrations
      where status = 'pending'`,
   );
+  const revenueByCurrency = await pool.query(
+    `select currency, coalesce(sum(amount), 0)::int as revenue
+     from registrations
+     where status = 'paid'
+     group by currency
+     order by currency`,
+  );
   const byChallenge = await pool.query(
     `select co.name as coach_name,
             ch.name as challenge_name,
@@ -557,6 +578,10 @@ export async function getAdminSummary() {
   return {
     totalPaidRegistrations: totals.rows[0]?.total_registrations ?? 0,
     totalRevenue: totals.rows[0]?.total_revenue ?? 0,
+    revenueByCurrency: revenueByCurrency.rows.map((row: Record<string, any>) => ({
+      currency: row.currency,
+      revenue: row.revenue,
+    })),
     totalPendingRegistrations: pending.rows[0]?.total_pending ?? 0,
     byChallenge: byChallenge.rows.map((row: Record<string, any>) => ({
       coachName: row.coach_name,

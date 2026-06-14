@@ -1,4 +1,5 @@
 export type PackageId = "free" | "premium-single" | "premium-duo";
+export type CurrencyCode = "AED" | "USD";
 
 export type CoachConfig = {
   id: string;
@@ -19,7 +20,7 @@ export type CoachConfig = {
     name: string;
     price: number;
     originalPrice?: number;
-    currency: "AED";
+    currency: CurrencyCode;
   }>;
   seo: {
     title: string;
@@ -34,29 +35,30 @@ const packageConfig = (
   duoPrice: number,
   singleOriginalPrice: number,
   duoOriginalPrice: number,
+  currency: CurrencyCode,
 ) => ({
   free: {
     id: "free" as const,
     trackingId: "free_challenge",
     name: "Free Challenge",
     price: 0,
-    currency: "AED" as const,
+    currency,
   },
   "premium-single": {
     id: "premium-single" as const,
-    trackingId: `one_month_challenge_${singlePrice}_aed`,
+    trackingId: `one_month_challenge_${String(singlePrice).replace(".", "_")}_${currency.toLowerCase()}`,
     name: "1-Month Fitnet Challenge",
     price: singlePrice,
     originalPrice: singleOriginalPrice,
-    currency: "AED" as const,
+    currency,
   },
   "premium-duo": {
     id: "premium-duo" as const,
-    trackingId: `one_month_duo_challenge_${duoPrice}_aed`,
+    trackingId: `one_month_duo_challenge_${String(duoPrice).replace(".", "_")}_${currency.toLowerCase()}`,
     name: "1-Month Fitnet Duo Challenge",
     price: duoPrice,
     originalPrice: duoOriginalPrice,
-    currency: "AED" as const,
+    currency,
   },
 });
 
@@ -74,7 +76,7 @@ export const coachConfigs = {
     challengeStartDate: "2026-07-01",
     instagramUrl: "https://www.instagram.com/abdulrahman.katlan/",
     instagramHandle: "@abdulrahman.katlan",
-    packages: packageConfig(149, 249, 1500, 2500),
+    packages: packageConfig(29.9, 54.9, 300, 550, "USD"),
     seo: {
       title: "Coach Abdulrahman Katlan Fitness Challenge | Fitnet",
       description: "Join Coach Abdulrahman Katlan's Fitnet challenge for guided workouts, nutrition support, progress tracking, and a motivating fitness community.",
@@ -95,7 +97,7 @@ export const coachConfigs = {
     challengeStartDate: "2026-07-01",
     instagramUrl: "https://www.instagram.com/_loay_hamdan/",
     instagramHandle: "@_loay_hamdan",
-    packages: packageConfig(149, 249, 1500, 2500),
+    packages: packageConfig(29.9, 54.9, 300, 550, "USD"),
     seo: {
       title: "Coach Loay Hamdan Fitness Challenge | Fitnet",
       description: "Transform your fitness with Coach Loay Hamdan on Fitnet through structured workouts, nutrition guidance, progress tracking, and community support.",
@@ -116,7 +118,7 @@ export const coachConfigs = {
     challengeStartDate: "2026-07-01",
     instagramUrl: "https://www.instagram.com/tarekalghafeer/",
     instagramHandle: "@tarekalghafeer",
-    packages: packageConfig(149, 249, 1500, 2500),
+    packages: packageConfig(29.9, 54.9, 300, 550, "USD"),
     seo: {
       title: "Coach Tarek Alghafeer Fitness Challenge | Fitnet",
       description: "Join Coach Tarek Alghafeer's Fitnet fitness challenge with guided workouts, nutrition planning, progress tracking, and community motivation.",
@@ -137,7 +139,7 @@ export const coachConfigs = {
     challengeStartDate: "2026-07-01",
     instagramUrl: "https://www.instagram.com/coach.karamalhemesh/",
     instagramHandle: "@coach.karamalhemesh",
-    packages: packageConfig(199, 349, 2000, 3500),
+    packages: packageConfig(49.9, 94.9, 400, 750, "USD"),
     seo: {
       title: "Coach Karam Alhemesh Fitness Challenge | Fitnet",
       description: "Join Coach Karam Alhemesh on Fitnet for a focused one-month fitness challenge with workout guidance, nutrition support, and progress tracking.",

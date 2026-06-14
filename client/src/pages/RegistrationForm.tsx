@@ -66,7 +66,7 @@ declare global {
 
 const activeCoach = getActiveCoachConfig();
 const fixedPaymentValue = activeCoach.packages["premium-single"].price;
-const fixedPaymentCurrency = "AED";
+const fixedPaymentCurrency = activeCoach.packages["premium-single"].currency;
 
 type DataLayerPayload = Record<string, string | number | boolean | null | undefined>;
 

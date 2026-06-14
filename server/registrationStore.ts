@@ -104,7 +104,17 @@ export async function ensureChallenge(coachSlug?: string | null) {
     .limit(1);
 
   if (existingChallenge) {
-    return { coach, challenge: existingChallenge };
+    const [challenge] = await db
+      .update(challenges)
+      .set({
+        name: config.challengeName,
+        priceAmount: Math.round(config.packages["premium-single"].price * 100),
+        currency: config.packages["premium-single"].currency,
+        updatedAt: new Date(),
+      })
+      .where(eq(challenges.id, existingChallenge.id))
+      .returning();
+    return { coach, challenge };
   }
 
   const [challenge] = await db
@@ -113,7 +123,7 @@ export async function ensureChallenge(coachSlug?: string | null) {
       coachId: coach.id,
       name: config.challengeName,
       slug: config.challengeSlug,
-      priceAmount: config.packages["premium-single"].price * 100,
+      priceAmount: Math.round(config.packages["premium-single"].price * 100),
       currency: config.packages["premium-single"].currency,
       entryCode: null,
       status: "active",
@@ -153,8 +163,8 @@ export async function createPendingRegistration(
       status: "pending",
       paymentProvider: "ziina",
       operationId,
-      amount: selectedPackage.price * 100,
-      currency: challenge.currency,
+      amount: Math.round(selectedPackage.price * 100),
+      currency: selectedPackage.currency,
       rawPayment: {
         packageId,
         packageTrackingId: selectedPackage.trackingId,
@@ -421,6 +431,15 @@ export async function getAdminSummary() {
     .from(registrations)
     .where(eq(registrations.status, "pending"));
 
+  const revenueByCurrency = await db
+    .select({
+      currency: registrations.currency,
+      revenue: sum(registrations.amount),
+    })
+    .from(registrations)
+    .where(eq(registrations.status, "paid"))
+    .groupBy(registrations.currency);
+
   const byChallenge = await db
     .select({
       coachName: coaches.name,
@@ -438,6 +457,10 @@ export async function getAdminSummary() {
   return {
     totalPaidRegistrations: Number(totals?.totalRegistrations ?? 0),
     totalRevenue: Number(totals?.totalRevenue ?? 0),
+    revenueByCurrency: revenueByCurrency.map((row) => ({
+      currency: row.currency,
+      revenue: Number(row.revenue ?? 0),
+    })),
     totalPendingRegistrations: Number(pending?.totalPending ?? 0),
     byChallenge: byChallenge.map((row) => ({
       coachName: row.coachName,

@@ -47,6 +47,10 @@ type RegistrationRecord = {
 type AdminSummary = {
   totalPaidRegistrations: number;
   totalRevenue: number;
+  revenueByCurrency?: Array<{
+    currency: string;
+    revenue: number;
+  }>;
   totalPendingRegistrations: number;
   byChallenge: Array<{
     coachName: string;
@@ -62,7 +66,7 @@ function formatMoney(amount: number, currency = "AED") {
   return new Intl.NumberFormat("en-AE", {
     style: "currency",
     currency,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 2,
   }).format(amount / 100);
 }
 
@@ -391,9 +395,16 @@ export default function AdminPortal() {
           </div>
           <div className="rounded-2xl border border-white/10 bg-card p-5">
             <Wallet className="h-5 w-5 text-primary" />
-            <p className="mt-4 text-3xl font-black">
-              {formatMoney(summary?.totalRevenue ?? 0)}
-            </p>
+            <div className="mt-4 space-y-1">
+              {(summary?.revenueByCurrency?.length
+                ? summary.revenueByCurrency
+                : [{ currency: "AED", revenue: summary?.totalRevenue ?? 0 }]
+              ).map((item) => (
+                <p key={item.currency} className="text-2xl font-black">
+                  {formatMoney(item.revenue, item.currency)}
+                </p>
+              ))}
+            </div>
             <p className="mt-1 text-sm font-bold text-white/50">Paid revenue</p>
           </div>
           <div className="rounded-2xl border border-white/10 bg-card p-5">
